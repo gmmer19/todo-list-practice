@@ -1,22 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Список</title>
-	<link rel="stylesheet" href="main.css">
-</head>
-<body>
-	<div class="inputs">
-		<input id="searchInput" type="text" placeholder="Поиск" >
-		
-		<div class="input-row">
-		<input id="itemInput" type="text" placeholder="Введите элемент">
-		<button id="addButton">Добавить</button>
-		</div>
-	</div>
-	<ul id="itemList"></ul>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Список</title>
+		<link rel="stylesheet" href="main.css" />
+	</head>
+	<body>
+		<div class="inputs">
+			<label class="visually-hidden" for="searchInput">Поисковая строка</label>
+			<input id="searchInput" type="text" placeholder="Поиск" />
 
-	<script src="script.js"></script>
-</body>
+			<div class="input-row">
+				<label class="visually-hidden" for="itemInput">Новая задача</label>
+				<input id="itemInput" type="text" placeholder="Введите элемент" />
+				<button id="addButton">Добавить</button>
+			</div>
+		</div>
+		<ul id="itemList"></ul>
+
+		<script src="script.js"></script>
+	</body>
 </html>

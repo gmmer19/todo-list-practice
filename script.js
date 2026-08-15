@@ -4,12 +4,19 @@ const itemList = document.querySelector("#itemList");
 const searchInput = document.querySelector("#searchInput");
 const items = [];
 
-const savedData = localStorage.getItem("items");
+function saveItems(key, value) {
+	localStorage.setItem(key, value);
+}
+function loadItems(key, value) {
+	localStorage.getItem(key, value);
+}
+
+const savedData = loadItems("items");
 if (savedData) {
 	items.push(...JSON.parse(savedData));
 }
 
-const savedSearch = localStorage.getItem("search");
+const savedSearch = loadItems("items");
 if (savedSearch) {
 	searchInput.value = savedSearch;
 	renderItems();
@@ -51,7 +58,7 @@ function renderItems() {
 }
 searchInput.addEventListener("input", function (event) {
 	renderItems();
-	localStorage.setItem("search", searchInput.value);
+	saveItems("search", searchInput.value);
 });
 
 itemList.addEventListener("click", function (event) {
@@ -61,13 +68,13 @@ itemList.addEventListener("click", function (event) {
 	if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
 		const item = items.find((item) => item.id === id);
 		item.completed = event.target.checked;
-		localStorage.setItem("items", JSON.stringify(items));
+		saveItems("items", JSON.stringify(items));
 	}
 
 	if (event.target.tagName === "BUTTON") {
 		const index = items.findIndex((item) => item.id === id);
 		items.splice(index, 1);
-		localStorage.setItem("items", JSON.stringify(items));
+		saveItems("items", JSON.stringify(items));
 		li.remove();
 	}
 });
@@ -97,7 +104,7 @@ itemList.addEventListener("dblclick", function (event) {
 		}
 		editing = false;
 		item.text = input.value;
-		localStorage.setItem("items", JSON.stringify(items));
+		saveItems("items", JSON.stringify(items));
 
 		input.replaceWith(span);
 		span.textContent = item.text;
@@ -129,7 +136,7 @@ addButton.addEventListener("click", function () {
 		completed: false,
 	};
 	items.push(item);
-	localStorage.setItem("items", JSON.stringify(items));
+	saveItems("items", JSON.stringify(items));
 	createItem(item);
 	itemInput.value = "";
 });
