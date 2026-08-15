@@ -1,0 +1,32 @@
+#itemInput, #searchInput {
+	display: flex;
+	flex-direction:column;
+	width: 165px;
+	box-sizing: border-box;
+}
+.inputs {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.input-row {
+	display: flex;
+	gap: 5px;
+}
+
+#itemList {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	margin-top: 10px;
+
+}
+
+#itemList li {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+}
