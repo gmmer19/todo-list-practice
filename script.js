@@ -7,21 +7,25 @@ const items = [];
 function saveItems(key, value) {
 	localStorage.setItem(key, value);
 }
-function loadItems(key, value) {
-	localStorage.getItem(key, value);
+function loadItems(key) {
+	const data = localStorage.getItem(key);
+	console.log("Loading key:", key);
+	console.log("Data from localStorage:", data);
+	return data;
 }
 
 const savedData = loadItems("items");
+console.log("saveData is:", savedData);
+
 if (savedData) {
 	items.push(...JSON.parse(savedData));
 }
 
-const savedSearch = loadItems("items");
+const savedSearch = loadItems("search");
 if (savedSearch) {
 	searchInput.value = savedSearch;
-	renderItems();
 }
-
+renderItems();
 function createItem(item) {
 	const li = document.createElement("li");
 	const span = document.createElement("span");
@@ -51,10 +55,6 @@ function createItem(item) {
 	itemList.append(li);
 }
 
-items.forEach(function (item) {
-	createItem(item);
-});
-
 function renderItems() {
 	const inputText = searchInput.value;
 	const filteredItems = items.filter((item) =>
@@ -65,6 +65,7 @@ function renderItems() {
 		createItem(item);
 	});
 }
+
 searchInput.addEventListener("input", function (event) {
 	renderItems();
 	saveItems("search", searchInput.value);
@@ -150,6 +151,6 @@ addButton.addEventListener("click", function () {
 	};
 	items.push(item);
 	saveItems("items", JSON.stringify(items));
-	createItem(item);
+	renderItems();
 	itemInput.value = "";
 });
