@@ -30,9 +30,18 @@ function createItem(item) {
 
 	checkbox.type = "checkbox";
 	checkbox.checked = item.completed;
+	checkbox.id = `item-${item.id}`;
+
+	const label = document.createElement("label");
+	label.htmlFor = checkbox.id;
+	button.textContent = "Удалить";
+	button.setAttribute("aria-label", `Удалить элемент: ${item.text}`);
 
 	span.textContent = item.text;
-	button.textContent = "Удалить";
+	span.tabIndex = 0;
+	span.addEventListener("keydown", function (event) {
+		if (event.key === "Enter") startEditing(event.target);
+	});
 
 	li.dataset.id = item.id;
 	li.append(checkbox);
@@ -79,19 +88,15 @@ itemList.addEventListener("click", function (event) {
 	}
 });
 
-itemList.addEventListener("dblclick", function (event) {
-	if (event.target.tagName !== "SPAN") {
-		return;
-	}
+function startEditing(span) {
 	let editing = true;
-	const span = event.target;
 	const li = span.parentElement;
 	const id = Number(li.dataset.id);
-
 	const item = items.find((item) => item.id === id);
 
 	const input = document.createElement("input");
 	input.value = item.text;
+
 	span.replaceWith(input);
 	input.focus();
 
@@ -122,6 +127,14 @@ itemList.addEventListener("dblclick", function (event) {
 	input.addEventListener("blur", function () {
 		finishEditing();
 	});
+}
+
+itemList.addEventListener("dblclick", function (event) {
+	if (event.target.tagName !== "SPAN") {
+		return;
+	}
+	const span = event.target;
+	startEditing(event.target);
 });
 
 addButton.addEventListener("click", function () {
