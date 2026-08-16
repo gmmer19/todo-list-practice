@@ -1,31 +1,41 @@
+// Достаём DOM элементы страницы
 const addButton = document.querySelector("#addButton");
 const itemInput = document.querySelector("#itemInput");
 const itemList = document.querySelector("#itemList");
 const searchInput = document.querySelector("#searchInput");
 const items = [];
 
+// Создаем функции для сохранения и загрузки хранилища
 function saveItems(key, value) {
 	localStorage.setItem(key, value);
 }
 function loadItems(key) {
 	const data = localStorage.getItem(key);
-	console.log("Loading key:", key);
-	console.log("Data from localStorage:", data);
 	return data;
 }
 
-const savedData = loadItems("items");
-console.log("saveData is:", savedData);
+// Иницализируем данные: (Загружаем данные по ключу "items", если есть то разворачиваем массив в виде объекта)
+// Восстанавливаем фильтры из хранилища по ключу "search", если есть то отдаем в поле ввода
+// Отрисовываем список учитывая фильтры
+function init() {
+	const savedData = loadItems("items");
 
-if (savedData) {
-	items.push(...JSON.parse(savedData));
-}
+	if (savedData) {
+		items.push(...JSON.parse(savedData));
+	}
 
-const savedSearch = loadItems("search");
-if (savedSearch) {
-	searchInput.value = savedSearch;
+	const savedSearch = loadItems("search");
+
+	if (savedSearch) {
+		searchInput.value = savedSearch;
+	}
+
+	renderItems();
 }
-renderItems();
+// Здесь же запускаем инициализацию, при загрузке страницы
+init();
+
+// Функция для создания первоначального списка, кнопок "Добавить", "Удалить", текста из поля ввода, чекбоксов, итд
 function createItem(item) {
 	const li = document.createElement("li");
 	const span = document.createElement("span");
@@ -55,6 +65,7 @@ function createItem(item) {
 	itemList.append(li);
 }
 
+// Функция для отрисовки списка createItems, но учитывая филтьтры
 function renderItems() {
 	const inputText = searchInput.value;
 	const filteredItems = items.filter((item) =>
@@ -66,13 +77,16 @@ function renderItems() {
 	});
 }
 
-searchInput.addEventListener("input", function (event) {
+//Вешаем слушатель на поле ввода, при каждом вводе пользователя запускается отрисовка списка с фильтром
+searchInput.addEventListener("input", function () {
 	renderItems();
 	saveItems("search", searchInput.value);
 });
 
+// При нажатии на чекбокс, мы определяем id для li, в котором находится название задачи
+// Например задача "Купить молоко" находится в li, соответсвенно этому блоку будет выдан уникальный id
 itemList.addEventListener("click", function (event) {
-	const li = event.target.parentElement;
+	const li = event.target.closest("li");
 	const id = Number(li.dataset.id);
 
 	if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
@@ -81,6 +95,7 @@ itemList.addEventListener("click", function (event) {
 		saveItems("items", JSON.stringify(items));
 	}
 
+	// В этом же ul, у нас лежит кнопка для удаления задач, поэтому здесь же мы делаем логику удаления
 	if (event.target.tagName === "BUTTON") {
 		const index = items.findIndex((item) => item.id === id);
 		items.splice(index, 1);
@@ -89,6 +104,7 @@ itemList.addEventListener("click", function (event) {
 	}
 });
 
+// Функция для редактирования текста созданной задачи, сначала мы определяем состояние, редактируем или нет
 function startEditing(span) {
 	let editing = true;
 	const li = span.parentElement;
@@ -106,6 +122,8 @@ function startEditing(span) {
 			return;
 		}
 		if (input.value.trim() === "") {
+			editing = false;
+			input.replaceWith(span);
 			return;
 		}
 		editing = false;
@@ -130,14 +148,15 @@ function startEditing(span) {
 	});
 }
 
+// Слушатель на двойное нажатие, что позволяет редактировать текст задачи из списка
 itemList.addEventListener("dblclick", function (event) {
 	if (event.target.tagName !== "SPAN") {
 		return;
 	}
-	const span = event.target;
 	startEditing(event.target);
 });
 
+// Слушатель для кнопки "Добавить", чтобы добавлять задачу из инпута пользователя
 addButton.addEventListener("click", function () {
 	const text = itemInput.value;
 
